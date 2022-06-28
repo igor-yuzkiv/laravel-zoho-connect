@@ -1,0 +1,23 @@
+{
+    "name": "igor-yuzkiv/zoho-connect",
+    "version": "0.0.4",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Igor Yuzkiv"
+        }
+    ],
+    "require": {
+        "php": "^8.1.0",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^9.2",
+        "spatie/data-transfer-object": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZohoConnect\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
