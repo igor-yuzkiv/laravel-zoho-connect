@@ -1,10 +1,10 @@
 <?php
 
-namespace ZohoConnect;
+namespace ZohoConnect\Authentication\DTO;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class ClientDto extends DataTransferObject
+class ClientCredentials extends DataTransferObject
 {
     public string $client_id;
     public string $client_secret;

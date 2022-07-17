@@ -1,6 +1,6 @@
 <?php
 
-namespace ZohoConnect\Actions;
+namespace ZohoConnect\Authentication\Actions;
 
 use Carbon\Carbon;
 use ZohoConnect\Exceptions\ClientNotFound;
@@ -24,6 +24,7 @@ class GetAccessToken
     /**
      * @return string
      * @throws ClientNotFound
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle(): string
     {

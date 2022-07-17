@@ -4,9 +4,9 @@ namespace ZohoConnect;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider as BaseProvider;
+use ZohoConnect\Authentication\Contracts\StorageDriver;
+use ZohoConnect\Authentication\Storage\EloquentStorage;
 use ZohoConnect\Facades\ZohoConnectAccessor;
-use ZohoConnect\Interfaces\StorageDriver;
-use ZohoConnect\Storage\EloquentStorage;
 
 class ZohoConnectServiceProvider extends BaseProvider
 {

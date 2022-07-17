@@ -2,17 +2,18 @@
 
 namespace ZohoConnect\Http\Controllers;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use ZohoConnect\Actions\GenerateAccessToken;
-use ZohoConnect\Actions\GeneratingGrantToken;
-use ZohoConnect\Helpers\URLHelper;
+use ZohoConnect\Authentication\Actions\GenerateAccessToken;
+use ZohoConnect\Authentication\Actions\GeneratingGrantToken;
+use ZohoConnect\Facades\ZohoConnect;
 use ZohoConnect\Http\Requests\AuthorizationRequest;
 use ZohoConnect\Http\Requests\CallbackRequest;
 
@@ -24,7 +25,7 @@ class AuthenticatorController extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function index()
     {
@@ -35,7 +36,7 @@ class AuthenticatorController extends BaseController
         $scopes = json_decode($scopes, true);
 
         return view("zoho.connection.index", [
-            'callback_url'        => URLHelper::join(config('app.url'), "/zoho/connection/callback"),
+            'callback_url'        => ZohoConnect::getCallbackUrl(),
             'data_center'         => config("zoho.connection.data_center"),
             'default_data_center' => config("zoho.connection.default_data_center"),
             'scopes'              => $scopes
@@ -44,11 +45,15 @@ class AuthenticatorController extends BaseController
 
     /**
      * @param AuthorizationRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @return Application|Factory|View|RedirectResponse
      */
-    public function authorization(AuthorizationRequest $request)
+    public function authorization(AuthorizationRequest $request): mixed
     {
         try {
+            if (!is_array($request->scopes)) {
+                return view("zoho.connection.error");
+            }
+
             $generateGrantCode = new GeneratingGrantToken(
                 id: $request->id,
                 secret: $request->secret,
@@ -71,7 +76,7 @@ class AuthenticatorController extends BaseController
 
     /**
      * @param CallbackRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|void
+     * @return Application|Factory|View|void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function callback(CallbackRequest $request)

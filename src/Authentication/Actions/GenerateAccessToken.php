@@ -1,12 +1,12 @@
 <?php
 
-namespace ZohoConnect\Actions;
+namespace ZohoConnect\Authentication\Actions;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use JetBrains\PhpStorm\ArrayShape;
 use ZohoConnect\Facades\ZohoConnect;
-use ZohoConnect\Helpers\URLHelper;
+use ZohoConnect\Utils\Url;
 
 /**
  * Step 3: Generate Access And Refresh Token
@@ -26,7 +26,7 @@ class GenerateAccessToken
      * @param string $code
      */
     public function __construct(
-        private string          $id,
+        private readonly string $id,
         private readonly string $secret,
         private readonly string $code,
     )
@@ -76,18 +76,19 @@ class GenerateAccessToken
     ])]
     private function getResponse(): array
     {
-        $dataCenter = ZohoConnect::dataCenterConfig($this->dataCenter);
+        $dataCenter = ZohoConnect::getDataCenterConfig($this->dataCenter);
 
-        $url = URLHelper::join(
-            config("zoho.connection.base_url") . $dataCenter['domain'],
-            'oauth/' . config("zoho.connection.version") . "/token"
-        );
+        $url = Url::of(config("zoho.connection.base_url") . $dataCenter['domain'])
+            ->join("oauth")
+            ->join(config("zoho.connection.version"))
+            ->join("token")
+            ->getValue();
 
         $query = [
             'grant_type'    => 'authorization_code',
             'client_id'     => $this->id,
             'client_secret' => $this->secret,
-            'redirect_uri'  => ZohoConnect::callbackUrl(),
+            'redirect_uri'  => ZohoConnect::getCallbackUrl(),
             'code'          => $this->code,
         ];
 

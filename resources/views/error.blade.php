@@ -45,6 +45,6 @@
 </head>
     <body>
         <i class="material-icons">error</i>
-        <h2>Something went completely wrong, start auth procedure again <a href="{{ url('zoho/auth')}}">here</a>.</h2>
+        <h2>Something went completely wrong, start auth procedure again <a href="{{ url('zoho/connection')}}">here</a>.</h2>
     </body>
 </html>

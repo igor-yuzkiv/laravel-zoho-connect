@@ -1,13 +1,13 @@
 <?php
 
-namespace ZohoConnect\Actions;
+namespace ZohoConnect\Authentication\Actions;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
-use ZohoConnect\ClientDto;
+use ZohoConnect\Authentication\DTO\ClientCredentials;
 use ZohoConnect\Facades\ZohoConnect;
-use ZohoConnect\Helpers\URLHelper;
+use ZohoConnect\Utils\Url;
 
 /**
  *
@@ -15,10 +15,10 @@ use ZohoConnect\Helpers\URLHelper;
 class RefreshToken
 {
     /**
-     * @param ClientDto $client
+     * @param ClientCredentials $client
      */
     public function __construct(
-        private ClientDto $client
+        private readonly ClientCredentials $client
     )
     {
 
@@ -26,10 +26,11 @@ class RefreshToken
 
     /**
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle(): string
     {
-        $response = $this->refreshRequst();
+        $response = $this->refreshRequest();
 
         $access_token = Arr::get($response, "access_token");
 
@@ -42,17 +43,18 @@ class RefreshToken
     }
 
     /**
-     * @return mixed
+     * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function refreshRequst()
+    private function refreshRequest(): array
     {
-        $dataCenter = ZohoConnect::dataCenterConfig($this->client->data_center);
+        $dataCenter = ZohoConnect::getDataCenterConfig($this->client->data_center);
 
-        $url = URLHelper::join(
-            config("zoho.connection.base_url") . $dataCenter['domain'],
-            'oauth/' . config("zoho.connection.version") . "/token"
-        );
+        $url = Url::of(config("zoho.connection.base_url") . $dataCenter['domain'])
+            ->join("oauth")
+            ->join(config("zoho.connection.version"))
+            ->join("token")
+            ->getValue();
 
         $client = new Client();
         $response = $client

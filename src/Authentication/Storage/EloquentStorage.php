@@ -1,11 +1,11 @@
 <?php
 
-namespace ZohoConnect\Storage;
+namespace ZohoConnect\Authentication\Storage;
 
 use Illuminate\Support\Arr;
-use ZohoConnect\ClientDto;
+use ZohoConnect\Authentication\Contracts\StorageDriver;
+use ZohoConnect\Authentication\DTO\ClientCredentials;
 use ZohoConnect\Exceptions\ClientNotFound;
-use ZohoConnect\Interfaces\StorageDriver;
 use ZohoConnect\Models\ConnectionModel;
 
 /**
@@ -33,11 +33,11 @@ class EloquentStorage implements StorageDriver
 
     /**
      * @param string $client_id
-     * @return ClientDto
+     * @return ClientCredentials
      * @throws ClientNotFound
      * @throws \Spatie\DataTransferObject\Exceptions\UnknownProperties
      */
-    public function get(string $client_id): ClientDto
+    public function get(string $client_id): ClientCredentials
     {
         $client = ConnectionModel::query()
             ->where('client_id', $client_id)
@@ -48,6 +48,6 @@ class EloquentStorage implements StorageDriver
             throw new ClientNotFound("Client not found. client_id: $client_id");
         }
 
-        return new ClientDto($client->toArray());
+        return new ClientCredentials($client->toArray());
     }
 }

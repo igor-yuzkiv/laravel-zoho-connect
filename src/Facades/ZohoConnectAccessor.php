@@ -3,9 +3,10 @@
 namespace ZohoConnect\Facades;
 
 use JetBrains\PhpStorm\ArrayShape;
-use ZohoConnect\Actions\GetAccessToken;
-use ZohoConnect\Helpers\URLHelper;
-use ZohoConnect\Interfaces\StorageDriver;
+use ZohoConnect\Authentication\Actions\GetAccessToken;
+use ZohoConnect\Authentication\Contracts\StorageDriver;
+use ZohoConnect\Authentication\DTO\ClientCredentials;
+use ZohoConnect\Utils\Url;
 
 /**
  *
@@ -31,7 +32,7 @@ class ZohoConnectAccessor
         'domain'   => 'string',
         'location' => 'string',
     ])]
-    public function dataCenterConfig(string $dataCenter = 'us'): array
+    public function getDataCenterConfig(string $dataCenter = 'us'): array
     {
         return config("zoho.connection.data_center.{$dataCenter}");
     }
@@ -39,9 +40,11 @@ class ZohoConnectAccessor
     /**
      * @return string
      */
-    public function callbackUrl(): string
+    public function getCallbackUrl(): string
     {
-        return URLHelper::join(config('app.url'), "/zoho/connection/callback");
+        return Url::of(config('app.url'))
+            ->join("/zoho/connection/callback")
+            ->getValue();
     }
 
     /**
@@ -50,5 +53,32 @@ class ZohoConnectAccessor
     public function storage(): StorageDriver
     {
         return app(StorageDriver::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientId(): string
+    {
+        return config("zoho.connection.default_client");
+    }
+
+    /**
+     * @param string|null $client_id
+     * @return ClientCredentials
+     */
+    public function getClientCredentials(?string $client_id = null): ClientCredentials
+    {
+        return ZohoConnect::storage()->get($client_id ?? $this->getClientId());
+    }
+
+    /**
+     * @param string|null $client_id
+     * @return string
+     */
+    public function getClientDomain(?string $client_id = null): string
+    {
+        $dataCenter = $this->getDataCenterConfig($this->getClientCredentials($client_id)->data_center);
+        return $dataCenter["domain"];
     }
 }

@@ -108,24 +108,6 @@
 
                                 <i class="material-icons">account_circle</i>
                                 <h2>Zoho OAuth Setup</h2><br>
-                                <div class="row">
-                                    <div class="col">
-                                        <label>
-                                            Open the link you need:<br>
-                                            For US:<a href="https://accounts.zoho.com/developerconsole"
-                                                      target="_blank">instruction</a><br>
-                                            For EU:<a href="https://accounts.zoho.eu/developerconsole"
-                                                      target="_blank">instruction</a><br>
-                                            For IN:<a href="https://accounts.zoho.in/developerconsole"
-                                                      target="_blank">instruction</a><br>
-                                            For CN:<a href="https://accounts.zoho.com.cn/developerconsole"
-                                                      target="_blank">instruction</a><br>
-                                            For AU:<a href="https://accounts.zoho.com.com.ua/developerconsole"
-                                                      target="_blank">instruction</a><br>
-                                            and enter the following details:
-                                        </label>
-                                    </div>
-                                </div>
                                 <div class="row mt-2">
                                     <div class="col">
                                         <label>

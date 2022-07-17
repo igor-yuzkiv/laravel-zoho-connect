@@ -1,14 +1,14 @@
 <?php
 
-namespace ZohoConnect\Storage;
+namespace ZohoConnect\Authentication\Storage;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
-use ZohoConnect\ClientDto;
+use ZohoConnect\Authentication\Contracts\StorageDriver;
+use ZohoConnect\Authentication\DTO\ClientCredentials;
 use ZohoConnect\Exceptions\ClientNotFound;
 use ZohoConnect\Exceptions\InvalidResponse;
-use ZohoConnect\Interfaces\StorageDriver;
 
 /**
  *
@@ -17,11 +17,11 @@ class RedisStorage implements StorageDriver
 {
     /**
      * @param string $client_id
-     * @return ClientDto
+     * @return ClientCredentials
      * @throws ClientNotFound
      * @throws \Spatie\DataTransferObject\Exceptions\UnknownProperties
      */
-    public function get(string $client_id): ClientDto
+    public function get(string $client_id): ClientCredentials
     {
         $client = Redis::connection($this->getDatabase())
             ->get($this->getPrefix() . '.' . $client_id);
@@ -32,7 +32,7 @@ class RedisStorage implements StorageDriver
             throw new ClientNotFound("Client not found. client_id: $client_id");
         }
 
-        return new ClientDto($client);
+        return new ClientCredentials($client);
     }
 
     /**

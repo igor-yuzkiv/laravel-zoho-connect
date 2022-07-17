@@ -19,12 +19,12 @@ class AuthorizationRequest extends FormRequest
             'id'          => "required",
             'secret'      => "required",
             'data_center' => "required",
-            'scopes' => ["required", "array"],
+            'scopes'      => ["required", "array"],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        return view("zoho.auth-driver.error");
+        return view("zoho.connection.error");
     }
 }

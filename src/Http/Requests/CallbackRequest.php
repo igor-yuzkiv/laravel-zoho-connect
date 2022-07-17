@@ -36,6 +36,6 @@ class CallbackRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        return view("zoho.auth-driver.error");
+        return view("zoho.connection.error");
     }
 }

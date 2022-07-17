@@ -1,9 +1,8 @@
 <?php
 
-namespace ZohoConnect\Interfaces;
+namespace ZohoConnect\Authentication\Contracts;
 
-use JetBrains\PhpStorm\ArrayShape;
-use ZohoConnect\ClientDto;
+use ZohoConnect\Authentication\DTO\ClientCredentials;
 
 /**
  *
@@ -18,7 +17,7 @@ interface StorageDriver
 
     /**
      * @param string $client_id
-     * @return ClientDto
+     * @return ClientCredentials
      */
-    public function get(string $client_id): ClientDto;
+    public function get(string $client_id): ClientCredentials;
 }

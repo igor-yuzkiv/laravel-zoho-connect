@@ -38,10 +38,10 @@ return [
 
     'storage' => [
         'eloquent' => [
-            'driver' => \ZohoConnect\Storage\EloquentStorage::class,
+            'driver' => \ZohoConnect\Authentication\Storage\EloquentStorage::class,
         ],
         'redis'    => [
-            'driver'   => \ZohoConnect\Storage\RedisStorage::class,
+            'driver'   => \ZohoConnect\Authentication\Storage\RedisStorage::class,
             'prefix'   => 'zoho-auth',
             'database' => 'default'
         ],

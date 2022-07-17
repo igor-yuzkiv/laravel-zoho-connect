@@ -1,12 +1,10 @@
 <?php
 
-namespace ZohoConnect\Actions;
+namespace ZohoConnect\Authentication\Actions;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
-use JetBrains\PhpStorm\ArrayShape;
 use ZohoConnect\Facades\ZohoConnect;
-use ZohoConnect\Helpers\URLHelper;
+use ZohoConnect\Utils\Url;
 
 /**
  * Step 2: Generating Grant Token
@@ -30,7 +28,7 @@ class GeneratingGrantToken
         private readonly array  $scopes
     )
     {
-
+        //
     }
 
     /**
@@ -55,26 +53,23 @@ class GeneratingGrantToken
     /**
      * @return string
      */
-    private function authorizationURL()
+    private function authorizationURL(): string
     {
-        $dataCenter = ZohoConnect::dataCenterConfig($this->dataCenter);
+        $dataCenter = ZohoConnect::getDataCenterConfig($this->dataCenter);
 
-        $url = URLHelper::join(
-            config("zoho.connection.base_url") . $dataCenter['domain'],
-            'oauth/' . config("zoho.connection.version") . "/auth"
-        );
-
-        return URLHelper::setQueryPrams(
-            $url,
-            [
+        return Url::of(config("zoho.connection.base_url") . $dataCenter['domain'],)
+            ->join("oauth")
+            ->join(config("zoho.connection.version"))
+            ->join("auth")
+            ->setQueryPrams([
                 'scope'         => implode(",", $this->scopes),
                 'client_id'     => $this->id,
                 'client_secret' => $this->secret,
                 'state'         => 'code',
                 'response_type' => 'code',
-                'redirect_uri'  => URLHelper::join(config('app.url'), "/zoho/connection/callback"),
+                'redirect_uri'  => Url::of(config('app.url'))->join("/zoho/connection/callback")->getValue(),
                 'access_type'   => 'offline'
-            ]
-        );
+            ])
+            ->getValue();
     }
 }
